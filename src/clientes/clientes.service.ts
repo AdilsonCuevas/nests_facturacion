@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateClienteDto } from './dto/create-cliente.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { BadRequestException } from '@nestjs/common';
 
 @Injectable()
 export class ClientesService {
@@ -13,7 +14,12 @@ export class ClientesService {
     ) {}
 
     async create(createClienteDto: CreateClienteDto): Promise<Cliente> {
-        const user = this.ClienteRepository.create(createClienteDto);
-        return await this.ClienteRepository.save(user);
+        try {
+            const user = this.ClienteRepository.create(createClienteDto);
+            return await this.ClienteRepository.save(user);
+        } catch (error) {
+            throw new BadRequestException("Error"+ error);
+        }
+        
     }
 }
