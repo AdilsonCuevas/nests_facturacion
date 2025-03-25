@@ -4,6 +4,8 @@ import { Injectable } from '@nestjs/common';
 import { CreateProductoDto } from './dto/create-producto.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CreateManteniminetoDto } from './dto/create-mantenimineto.dto';
+import { BadRequestException } from '@nestjs/common';
 
 @Injectable()
 export class ProductosService {
@@ -20,21 +22,29 @@ export class ProductosService {
         // Crear cliente
         const producto = this.equipoRepository.create({
             serial: createClienteDto.serial,
-            valor_compa: createClienteDto.valor_compa,
+            referencia: createClienteDto.referencia,
+            valor_compra: createClienteDto.valor_compra,
         });
     
         // Guardar el cliente
         const clienteGuardado = await this.equipoRepository.save(producto);
-
-        const newDetalles = this.equipoCostoRepository.create({
-            equipo_id: clienteGuardado.id,
-            fecha: createClienteDto.fecha,
-            descripcion: createClienteDto.descripcion,
-            valor: createClienteDto.valor,
-        });
-    
-        await this.equipoCostoRepository.save(newDetalles);
-
         return clienteGuardado;
+    }
+
+    async createMantenimiento(createManteniminetoDto: CreateManteniminetoDto): Promise<EquipoCosto>{
+        const newDetalles = this.equipoCostoRepository.create({
+            equipo_id: createManteniminetoDto.equipo_id,
+            fecha: createManteniminetoDto.fecha,
+            descripcion: createManteniminetoDto.descripcion,
+            valor: createManteniminetoDto.valor,
+        });
+
+        try {
+            const mantenimineto = await this.equipoCostoRepository.save(newDetalles);
+            return mantenimineto;
+        } catch (error) {
+            throw new BadRequestException("Error"+ error);
+        }
+        
     }
 }

@@ -8,6 +8,9 @@ export class Equipo {
     @Column({ type: 'varchar', length: 20, unique: true }) 
     serial: string;
 
+    @Column({ type: 'varchar', length: 100 }) 
+    referencia: string;
+
     @Column({ type: 'bigint' })  
-    valor_compa: number;
+    valor_compra: number;
 }

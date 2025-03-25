@@ -13,7 +13,7 @@ export class NegociosController {
         return this.negociosService.create(createNegocioDto);
     }
 
-    @Get()
+    @Get('facturar')
     facturar() {
         return this.negociosService.findAll();
     }
